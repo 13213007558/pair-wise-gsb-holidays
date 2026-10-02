@@ -1,0 +1,18 @@
+months:
+  9:
+  - name: Fall Hebrew Test
+    regions: [custom_hebrew]
+    hebrew_month: tishrei
+    hebrew_day: 10
+  3:
+  - name: Common Adar Hebrew Test
+    regions: [custom_hebrew]
+    hebrew_month: adar
+    hebrew_day: 14
+  2:
+  - name: Leap Adar Test
+    regions: [custom_hebrew]
+    hebrew_month: adar_i
+    hebrew_day: 14
+
+tests: []

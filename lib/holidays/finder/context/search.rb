@@ -2,10 +2,11 @@ module Holidays
   module Finder
     module Context
       class Search
-        def initialize(holidays_by_month_repo, custom_method_processor, day_of_month_calculator, rules)
+        def initialize(holidays_by_month_repo, custom_method_processor, day_of_month_calculator, rules, hebrew_date_calculator = Holidays::Factory::DateCalculator.hebrew_date)
           @holidays_by_month_repo = holidays_by_month_repo
           @custom_method_processor = custom_method_processor
           @day_of_month_calculator = day_of_month_calculator
+          @hebrew_date_calculator = hebrew_date_calculator
           @rules = rules
         end
 
@@ -24,7 +25,9 @@ module Holidays
                   next unless @rules[:year_range].call(year, h[:year_ranges])
                 end
 
-                dates = if h[:function]
+                dates = if h[:hebrew_month]
+                  hebrew_holidays(year, h)
+                elsif h[:function]
                   custom_holidays(year, month, h, regions)
                 else
                   date = build_date(year, month, h, regions)
@@ -98,6 +101,16 @@ module Holidays
             date = Date.civil(year, result.month, result.mday) rescue nil
             dates << date if date
           end.uniq
+        end
+
+        def hebrew_holidays(year, h)
+          date = @hebrew_date_calculator.gregorian_year_occurrence(
+            year,
+            h[:hebrew_month],
+            h[:hebrew_day],
+          )
+
+          date ? [date] : []
         end
 
         # When the queried region is :any (or no holiday_regions are provided), fall back

@@ -93,7 +93,6 @@ module Holidays
           "qld_queens_bday_october(year)" => AU.method(:qld_queens_bday_october).to_proc,
           "qld_queens_birthday_june(year)" => AU.method(:qld_queens_birthday_june).to_proc,
           "ramadan_feast(year)" => TR.method(:ramadan_feast).to_proc,
-          "rosh_hashanah(year)" => US.method(:rosh_hashanah).to_proc,
           "sacrifice_feast(year)" => TR.method(:sacrifice_feast).to_proc,
           "se_alla_helgons_dag(year)" => SE.method(:se_alla_helgons_dag).to_proc,
           "se_midsommardagen(year)" => SE.method(:se_midsommardagen).to_proc,
@@ -102,7 +101,6 @@ module Holidays
           "to_nearest_monday(date)" => AR.method(:to_nearest_monday).to_proc,
           "to_nearest_monday_after(date)" => AU.method(:to_nearest_monday_after).to_proc,
           "us_inauguration_day(year)" => US.method(:us_inauguration_day).to_proc,
-          "yom_kippur(year)" => US.method(:yom_kippur).to_proc,
         }
       end
     end

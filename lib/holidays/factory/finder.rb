@@ -17,6 +17,7 @@ module Holidays
             Factory::Definition.function_processor,
             Factory::DateCalculator.day_of_month_calculator,
             rules,
+            Factory::DateCalculator.hebrew_date,
           )
         end
 

@@ -566,17 +566,17 @@ assert_equal "Labor Day", (Holidays.on(Date.civil(2019, 9, 2), [:us])[0] || {})[
 assert_nil (Holidays.on(Date.civil(2018, 9, 10), [:us])[0] || {})[:name]
 assert_nil (Holidays.on(Date.civil(2019, 9, 30), [:us])[0] || {})[:name]
 
-    assert_equal "Rosh Hashanah", (Holidays.on(Date.civil(2017, 9, 21), [:us_tx])[0] || {})[:name]
-assert_equal "Rosh Hashanah", (Holidays.on(Date.civil(2018, 9, 10), [:us_tx])[0] || {})[:name]
-assert_equal "Rosh Hashanah", (Holidays.on(Date.civil(2019, 9, 30), [:us_tx])[0] || {})[:name]
+    assert_equal "Rosh Hashanah", (Holidays.on(Date.civil(2017, 9, 22), [:us_tx])[0] || {})[:name]
+    assert_equal "Rosh Hashanah", (Holidays.on(Date.civil(2018, 9, 10), [:us_tx])[0] || {})[:name]
+    assert_equal "Rosh Hashanah", (Holidays.on(Date.civil(2019, 9, 29), [:us_tx])[0] || {})[:name]
 
     assert_nil (Holidays.on(Date.civil(2017, 9, 30), [:us])[0] || {})[:name]
 assert_nil (Holidays.on(Date.civil(2018, 9, 19), [:us])[0] || {})[:name]
 assert_nil (Holidays.on(Date.civil(2019, 10, 9), [:us])[0] || {})[:name]
 
-    assert_equal "Yom Kippur", (Holidays.on(Date.civil(2017, 9, 30), [:us_tx])[0] || {})[:name]
-assert_equal "Yom Kippur", (Holidays.on(Date.civil(2018, 9, 19), [:us_tx])[0] || {})[:name]
-assert_equal "Yom Kippur", (Holidays.on(Date.civil(2019, 10, 9), [:us_tx])[0] || {})[:name]
+    assert_equal "Yom Kippur", (Holidays.on(Date.civil(2017, 10, 1), [:us_tx])[0] || {})[:name]
+    assert_equal "Yom Kippur", (Holidays.on(Date.civil(2018, 9, 19), [:us_tx])[0] || {})[:name]
+    assert_equal "Yom Kippur", (Holidays.on(Date.civil(2019, 10, 8), [:us_tx])[0] || {})[:name]
 
     assert_nil (Holidays.on(Date.civil(2017, 10, 9), [:us])[0] || {})[:name]
 assert_nil (Holidays.on(Date.civil(2018, 10, 8), [:us])[0] || {})[:name]

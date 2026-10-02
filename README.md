@@ -298,6 +298,30 @@ to the [definitions repository](https://github.com/holidays/definitions), where
 `rake generate` turns them into the test suite. There is no runtime mechanism to
 run the tests embedded in a custom file loaded on the fly.
 
+### Hebrew calendar dates
+
+Rules may define whole civil dates in the arithmetic Hebrew calendar. The
+`hebrew_month` and `hebrew_day` fields automatically resolve for every Gregorian
+year intersected by the rule; do not derive a Hebrew year from the Gregorian
+year. This supports rules that fall before or after Rosh Hashanah and ranges
+that cross two Hebrew years. Sunset is not modeled.
+
+```yaml
+months:
+  0:
+  - name: Purim
+    regions: [example]
+    hebrew_month: adar
+    hebrew_day: 14
+  - name: Purim in a leap year
+    regions: [example]
+    hebrew_month: adar_ii
+    hebrew_day: 14
+```
+
+Use `adar` in common years and `adar_i` or `adar_ii` in leap years. Unknown or
+impossible months/days raise `ArgumentError` while custom definitions load.
+
 ## Extending Ruby's Date and Time classes
 
 ### Date

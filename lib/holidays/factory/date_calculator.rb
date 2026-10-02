@@ -3,6 +3,7 @@ require 'holidays/date_calculator/weekend_modifier'
 require 'holidays/date_calculator/day_of_month'
 require 'holidays/date_calculator/lunar_date'
 require 'holidays/date_calculator/hijri_date'
+require 'holidays/date_calculator/hebrew_date'
 
 module Holidays
   module Factory
@@ -32,6 +33,10 @@ module Holidays
 
         def hijri_date
           Holidays::DateCalculator::HijriDate.new
+        end
+
+        def hebrew_date
+          Holidays::DateCalculator::HebrewDate.new
         end
 
         def weekend_modifier

@@ -1,4 +1,5 @@
 require 'yaml'
+require 'holidays/date_calculator/hebrew_date'
 
 #FIXME This whole file is my next refactor target. We do wayyyyy too much by
 #      convention here. We need hard and fast rules and explicit errors when you
@@ -90,10 +91,13 @@ module Holidays
           rules_by_month = {}
 
           if month_definitions
+            hebrew_source_months = []
+
             month_definitions.each do |month, definitions|
               rules_by_month[month] = [] unless rules_by_month[month]
               definitions.each do |definition|
                 rule = {}
+                definition_month = month
 
                 definition.each do |key, val|
                   # Ruby 2.4 doesn't have the `transform_keys` method. Once we drop 2.4 support we can
@@ -117,9 +121,14 @@ module Holidays
                 rule[:regions] = rule[:regions].collect(&:to_sym)
                 regions << rule[:regions]
 
+                if rule[:hebrew_month]
+                  normalize_hebrew_rule!(rule)
+                  hebrew_source_months << definition_month
+                end
+
                 exists = false
-                rules_by_month[month].each do |ex|
-                  if ex[:name] == rule[:name] and ex[:wday] == rule[:wday] and ex[:mday] == rule[:mday] and ex[:week] == rule[:week] and ex[:type] == rule[:type] and ex[:function] == rule[:function] and ex[:function_modifier] == rule[:function_modifier] and ex[:observed] == rule[:observed] and ex[:year_ranges] == rule[:year_ranges]
+                (rules_by_month[month] ||= []).each do |ex|
+                  if rules_equivalent?(ex, rule)
                     ex[:regions] << rule[:regions].flatten
                     exists = true
                   end
@@ -136,9 +145,17 @@ module Holidays
                     rule[:observed_arguments] = get_function_arguments(rule[:observed], parsed_custom_methods)
                   end
 
-                  rules_by_month[month] << rule
+                  target_month = rule[:hebrew_month] ? definition_month : month
+                  (rules_by_month[target_month] ||= []) << rule
                 end
               end
+            end
+
+            hebrew_source_months.uniq.each do |source_month|
+              rules_by_month[0] ||= []
+              hebrew_rules, other_rules = rules_by_month.fetch(source_month, []).partition { |rule| rule[:hebrew_month] }
+              rules_by_month[0].concat(hebrew_rules)
+              other_rules.empty? ? rules_by_month.delete(source_month) : rules_by_month[source_month] = other_rules
             end
           end
 
@@ -156,6 +173,10 @@ module Holidays
               string = +'{'
               if rule[:mday]
                 string << ":mday => #{rule[:mday]}, "
+              end
+
+              if rule[:hebrew_month]
+                string << ":hebrew_month => :#{rule[:hebrew_month]}, :hebrew_day => #{rule[:hebrew_day]}, "
               end
 
               if rule[:function]
@@ -217,6 +238,41 @@ module Holidays
           else
             raise ArgumentError, "Unknown function '#{function_id}'. It must either be a built-in method or be defined in the 'methods' section of a definition file."
           end
+        end
+
+        def normalize_hebrew_rule!(rule)
+          month = rule[:hebrew_month].to_s.downcase.tr('-', '_').gsub(/\s+/, '_').to_sym
+          day = rule[:hebrew_day]
+
+          unless day.is_a?(Integer) && day >= 1 && day <= 30
+            raise ArgumentError, "hebrew_day must be an integer from 1 to 30"
+          end
+
+          forbidden = [:mday, :wday, :week, :function]
+          present = forbidden.select { |key| rule.key?(key) }
+          unless present.empty?
+            raise ArgumentError, "Hebrew calendar rules cannot use #{present.join(', ')}"
+          end
+
+          rule[:hebrew_month] = calculator.validate_rule!(month, day)
+        end
+
+        def calculator
+          @calculator ||= Holidays::DateCalculator::HebrewDate.new
+        end
+
+        def rules_equivalent?(left, right)
+          left[:name] == right[:name] &&
+            left[:wday] == right[:wday] &&
+            left[:mday] == right[:mday] &&
+            left[:week] == right[:week] &&
+            left[:type] == right[:type] &&
+            left[:function] == right[:function] &&
+            left[:function_modifier] == right[:function_modifier] &&
+            left[:observed] == right[:observed] &&
+            left[:year_ranges] == right[:year_ranges] &&
+            left[:hebrew_month] == right[:hebrew_month] &&
+            left[:hebrew_day] == right[:hebrew_day]
         end
       end
     end
