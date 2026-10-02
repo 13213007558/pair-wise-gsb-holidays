@@ -31,6 +31,33 @@ module Holidays
       between(date, date, *options)
     end
 
+    def allocate_observed_days(holidays, weekends: {}, default_weekend: [0, 6],
+                               default_weekend_days: nil,
+                               weekend_days_by_region: nil, region_weekends: nil,
+                               **options)
+      weekends = weekend_days_by_region || region_weekends || weekends
+      default_weekend_days ||= default_weekend
+      normalized_holidays = holidays.map do |holiday|
+        holiday.dup.tap do |normalized|
+          normalized[:date] = get_date(normalized[:date]) if normalized[:date]
+          normalized[:original_date] = get_date(normalized[:original_date]) if normalized[:original_date]
+        end
+      end
+
+      normalized_search_range(options, :search_range)
+      normalized_search_range(options, :within)
+      normalized_search_range(options, :range)
+      normalized_search_range(options, :output_range)
+
+      Factory::DateCalculator.observed_day_allocator.call(
+        normalized_holidays,
+        weekends: weekends,
+        default_weekend_days: default_weekend_days,
+        **options,
+      )
+    end
+    alias allocate_makeup_days allocate_observed_days
+
     def between(start_date, end_date, *options)
       raise ArgumentError unless start_date && end_date
 
@@ -129,6 +156,11 @@ module Holidays
     end
 
     private
+
+    def normalized_search_range(options, key)
+      return unless options[key]
+      options[key] = get_date(options[key].begin)..get_date(options[key].end)
+    end
 
     def get_date(date)
       if date.respond_to?(:to_date)

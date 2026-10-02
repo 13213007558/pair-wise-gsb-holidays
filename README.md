@@ -173,6 +173,28 @@ Holidays.between(from, to, :federalreserve, :observed)
     {:name => "Birthday of Martin Luther King, Jr"....}]
 ```
 
+#### Allocate substitute days when multiple holidays collide
+
+The definition-based `:observed` callbacks calculate each holiday independently. Use `Holidays.allocate_observed_days` when several holidays in the same region must compete for available weekdays. Lower `:priority` values are allocated first; the returned order is independent of input order.
+
+Supported strategies are `:forward`, `:backward`, `:nearest_weekday`, or a hash such as `{direction: :nearest, tie: :forward}`. Weekend days are supplied per region as `Date#wday` values or day-name symbols (`0` is Sunday, `6` is Saturday).
+
+```ruby
+holidays = [
+  {date: Date.new(2022, 1, 1), name: "New Year's Day", regions: [:custom], priority: 3},
+  {date: Date.new(2021, 12, 26), name: "Boxing Day", regions: [:custom], priority: 2},
+  {date: Date.new(2021, 12, 25), name: "Christmas Day", regions: [:custom], priority: 1}
+]
+
+Holidays.allocate_observed_days(
+  holidays,
+  weekends: {custom: [:sunday, :saturday]},
+  strategy: {direction: :nearest, tie: :forward}
+)
+```
+
+Each result keeps `:original_date`, records the selected date in `:date` and `:observed_date`, and sets `:allocation_status` to `:allocated`, `:not_required`, or `:unallocated`. Pass `search_range:` or `range:` to limit the dates that may be occupied. Pass `within:` or `output_range:` to calculate from the complete relevant years and then slice a short cross-year window; this gives the same result as allocating all years and slicing afterward.
+
 #### Check whether any holidays occur during work week
 
 Check if there are any holidays taking place during a specified work week. 'Work week' is defined as the period of Monday through Friday of the week specified by the date.

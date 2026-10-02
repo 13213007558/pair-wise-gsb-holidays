@@ -1,5 +1,6 @@
 require 'holidays/date_calculator/easter'
 require 'holidays/date_calculator/weekend_modifier'
+require 'holidays/date_calculator/observed_day_allocator'
 require 'holidays/date_calculator/day_of_month'
 require 'holidays/date_calculator/lunar_date'
 require 'holidays/date_calculator/hijri_date'
@@ -36,6 +37,10 @@ module Holidays
 
         def weekend_modifier
           Holidays::DateCalculator::WeekendModifier.new
+        end
+
+        def observed_day_allocator
+          Holidays::DateCalculator::ObservedDayAllocator
         end
 
         def day_of_month_calculator
