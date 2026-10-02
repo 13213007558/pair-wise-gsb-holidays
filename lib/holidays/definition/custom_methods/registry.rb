@@ -9,6 +9,7 @@ require 'holidays/definition/custom_methods/de'
 require 'holidays/definition/custom_methods/fedex'
 require 'holidays/definition/custom_methods/fi'
 require 'holidays/definition/custom_methods/ie'
+require 'holidays/definition/custom_methods/il'
 require 'holidays/definition/custom_methods/is'
 require 'holidays/definition/custom_methods/jp'
 require 'holidays/definition/custom_methods/kr'
@@ -60,6 +61,13 @@ module Holidays
           "hari_raya_puasa(year)" => MY.method(:hari_raya_puasa).to_proc,
           "hobart_show_day(year)" => AU.method(:hobart_show_day).to_proc,
           "ie_st_brigids_day(year)" => IE.method(:ie_st_brigids_day).to_proc,
+          "il_jewish_new_year(year)" => IL.method(:jewish_new_year).to_proc,
+          "il_second_new_year_day(year)" => IL.method(:second_new_year_day).to_proc,
+          "il_day_of_atonement(year)" => IL.method(:day_of_atonement).to_proc,
+          "il_feast_of_tabernacles(year)" => IL.method(:feast_of_tabernacles).to_proc,
+          "il_rejoicing_of_the_torah(year)" => IL.method(:rejoicing_of_the_torah).to_proc,
+          "il_exodus_from_egypt(year)" => IL.method(:exodus_from_egypt).to_proc,
+          "il_exodus_from_egypt_day_7(year)" => IL.method(:exodus_from_egypt_day_7).to_proc,
           "independence_day(region, date)" => US.method(:independence_day).to_proc,
           "is_sumardagurinn_fyrsti(year)" => IS.method(:is_sumardagurinn_fyrsti).to_proc,
           "jp_citizens_holiday(year)" => JP.method(:jp_citizens_holiday).to_proc,

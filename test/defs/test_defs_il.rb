@@ -31,5 +31,24 @@ class IlDefinitionTests < Test::Unit::TestCase  # :nodoc:
 
     assert_nil (Holidays.on(Date.civil(2026, 8, 15), [:il])[0] || {})[:name]
 
+    # Dates are fixed in the arithmetic Hebrew calendar, so they keep
+    # resolving past the years the old hand-copied table covered.
+    assert_equal "Jewish New Year", (Holidays.on(Date.civil(2030, 9, 28), [:il])[0] || {})[:name]
+    assert_equal "Day of Atonement", (Holidays.on(Date.civil(2030, 10, 7), [:il])[0] || {})[:name]
+    assert_equal "Feast of Tabernacles", (Holidays.on(Date.civil(2030, 10, 12), [:il])[0] || {})[:name]
+    assert_equal "Rejoicing of the Torah", (Holidays.on(Date.civil(2030, 10, 20), [:il])[0] || {})[:name]
+
+    # Purim/Adar 13: in a leap Hebrew year (e.g. 5784) it lands in Adar II.
+    assert_equal "Exodus from Egypt", (Holidays.on(Date.civil(2024, 3, 23), [:il])[0] || {})[:name]
+    assert_nil (Holidays.on(Date.civil(2024, 2, 23), [:il])[0] || {})[:name]
+
+    # A Gregorian range crossing the Tishrei boundary must see holidays from
+    # both overlapping Hebrew years rather than applying one formula once per
+    # Gregorian year.
+    range = Holidays.between(Date.civil(2025, 9, 1), Date.civil(2025, 10, 31), [:il]).map { |holiday| [holiday[:date].to_s, holiday[:name]] }
+    assert_include range, ["2025-09-23", "Jewish New Year"]
+    assert_include range, ["2025-10-02", "Day of Atonement"]
+    assert_include range, ["2025-10-15", "Rejoicing of the Torah"]
+
   end
 end

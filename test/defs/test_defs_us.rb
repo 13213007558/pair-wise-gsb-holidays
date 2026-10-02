@@ -298,6 +298,12 @@ assert_nil (Holidays.on(Date.civil(2019, 10, 9), [:us])[0] || {})[:name]
 assert_equal "Yom Kippur", (Holidays.on(Date.civil(2018, 9, 19), [:us_tx])[0] || {})[:name]
 assert_equal "Yom Kippur", (Holidays.on(Date.civil(2019, 10, 9), [:us_tx])[0] || {})[:name]
 
+    # Calculated from the arithmetic Hebrew calendar, so years beyond the old
+    # 2014-2020 lookup table resolve too.
+    assert_equal "Rosh Hashanah", (Holidays.on(Date.civil(2030, 9, 28), [:us_tx])[0] || {})[:name]
+    assert_equal "Yom Kippur", (Holidays.on(Date.civil(2030, 10, 7), [:us_tx])[0] || {})[:name]
+    assert_equal "Rosh Hashanah", (Holidays.on(Date.civil(2024, 10, 3), [:us_tx])[0] || {})[:name]
+
     assert_nil (Holidays.on(Date.civil(2017, 10, 9), [:us])[0] || {})[:name]
 assert_nil (Holidays.on(Date.civil(2018, 10, 8), [:us])[0] || {})[:name]
 assert_nil (Holidays.on(Date.civil(2019, 10, 14), [:us])[0] || {})[:name]

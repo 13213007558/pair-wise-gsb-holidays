@@ -13,29 +13,11 @@ module Holidays
           end
 
           def rosh_hashanah(year)
-            rosh_hashanah_dates = {
-                '2014' => Date.civil(2014, 9, 25),
-                '2015' => Date.civil(2015, 9, 14),
-                '2016' => Date.civil(2016, 10, 3),
-                '2017' => Date.civil(2017, 9, 21),
-                '2018' => Date.civil(2018, 9, 10),
-                '2019' => Date.civil(2019, 9, 30),
-                '2020' => Date.civil(2020, 9, 19)
-            }
-            rosh_hashanah_dates[year.to_s]
+            Holidays::Factory::DateCalculator.hebrew_date.gregorian_year_occurrence(year, :tishrei, 1)
           end
 
           def yom_kippur(year)
-            yom_kippur_dates = {
-                '2014' => Date.civil(2014, 10, 4),
-                '2015' => Date.civil(2015, 9, 23),
-                '2016' => Date.civil(2016, 10, 12),
-                '2017' => Date.civil(2017, 9, 30),
-                '2018' => Date.civil(2018, 9, 19),
-                '2019' => Date.civil(2019, 10, 9),
-                '2020' => Date.civil(2020, 9, 28)
-            }
-            yom_kippur_dates[year.to_s]
+            Holidays::Factory::DateCalculator.hebrew_date.gregorian_year_occurrence(year, :tishrei, 10)
           end
 
           def georgia_state_holiday(year, month)
