@@ -8,6 +8,7 @@ require 'holidays/factory/date_calculator'
 require 'holidays/factory/finder'
 require 'holidays/errors'
 require 'holidays/bootstrap'
+require 'holidays/substitute_day_allocator'
 
 module Holidays
   WEEKS = {:first => 1, :second => 2, :third => 3, :fourth => 4, :fifth => 5, :last => -1, :second_last => -2, :third_last => -3}
@@ -83,6 +84,13 @@ module Holidays
       cache_data = between(start_date, end_date, *options)
 
       Factory::Definition.cache_repository.cache_between(start_date, end_date, cache_data, options)
+    end
+
+    # Allocates substitute (compensatory) rest days for a group of holidays,
+    # e.g. the hashes returned by Holidays.between. See
+    # Holidays::SubstituteDayAllocator for the available options.
+    def allocate_substitutes(holidays, options = {})
+      SubstituteDayAllocator.new.call(holidays, options)
     end
 
     def available_regions

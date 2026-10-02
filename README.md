@@ -204,6 +204,29 @@ Holidays.any_holidays_during_work_week?(Date.new(2018, 11, 12), :us)
 => false
 ```
 
+#### Allocate substitute (compensatory) rest days for a group of holidays
+
+When several holidays fall on a weekend, shifting each one independently can move them onto the same workday. `Holidays.allocate_substitutes` instead processes the whole group in a deterministic priority order (original date, then name, then regions) and lets each holiday claim the first available date, skipping dates already claimed by another holiday of the same region. The result is stable no matter how the input is ordered.
+
+```ruby
+holidays = Holidays.between(Date.new(2021, 12, 20), Date.new(2022, 1, 5), :us)
+
+Holidays.allocate_substitutes(holidays, :strategy => :forward)
+=> [{:name => "Christmas Day", :regions => [:us], :date => Date.new(2021, 12, 25),
+     :substitute_date => Date.new(2021, 12, 27), :reasons => [:weekend]},
+    {:name => "New Year's Day", :regions => [:us], :date => Date.new(2022, 1, 1),
+     :substitute_date => Date.new(2022, 1, 3), :reasons => [:weekend]}]
+```
+
+Each entry keeps the holiday's original `:date`, the allocated `:substitute_date` (nil when no position was available inside the search range) and the `:reasons` for the substitute (`:weekend`, `:occupied`, `:no_available_date`). Holidays with the same name but different regions are never merged and do not compete for the same dates.
+
+Available options:
+
+* `:strategy` - `:forward` (default) searches later dates, `:backward` searches earlier dates, `:nearest` picks the closest workday in either direction.
+* `:tie` - for `:nearest`, which direction wins when both are equally close: `:forward` (default) or `:backward`.
+* `:weekends` - hash of region => array of weekend wdays (0 = Sunday), with an optional `:default` entry. Defaults to Saturday/Sunday, e.g. `:weekends => {:il => [5, 6]}`.
+* `:from` / `:to` - query window; only holidays whose original or substitute date falls inside it are returned. The search range always spans the full calendar years covering the window and all given holidays, so querying a small cross-year window yields exactly the same allocation as querying the full years and slicing the results.
+
 #### Find the next holiday(s) that will occur from a specific date
 
 Get the next holidays occurring from February 23, 2016 for the US:

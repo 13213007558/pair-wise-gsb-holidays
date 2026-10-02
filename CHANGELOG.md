@@ -1,5 +1,9 @@
 # Ruby Holidays Gem CHANGELOG
 
+## Unreleased
+
+* Add `Holidays.allocate_substitutes` (backed by `Holidays::SubstituteDayAllocator`), an explicit substitute-rest allocation strategy for a group of holidays. Holidays claim available dates in a deterministic priority order (original date, then name, then regions), skipping dates already claimed by a holiday of the same region, so colliding weekend holidays no longer land on the same workday and the result is stable across input orders. Supports `:forward`, `:backward` and `:nearest` strategies with a `:tie` preference, region-specific `:weekends`, keeps each holiday's original date and substitute reasons, never merges same-name holidays from different regions, and reports unassigned entries when no position is available inside the search range.
+
 ## 11.6.0
 
 * Update to [v9.1.0 definitions](https://github.com/holidays/definitions/releases/tag/v9.1.0): `tr` feast dates calculated instead of table-driven, `vn` Giỗ Tổ Hùng Vương date fixes, and a region-aware `us` Independence Day observed shift.
